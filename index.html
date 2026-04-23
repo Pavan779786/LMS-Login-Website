@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Masters Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--primary:#6C3DE8;--primary-dark:#4f28c4;--secondary:#00D4AA;--accent:#FF6B6B;--bg:#0A0A1A;--bg2:#111128;--bg3:#1A1A35;--card:#16163A;--text:#E8E8FF;--muted:#8888AA;--border:#2A2A4A;--gold:#FFD700;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+.page{display:none;min-height:100vh;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* LOGIN */
+#loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;position:relative;}
+.login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(108,61,232,0.25) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(0,212,170,0.15) 0%,transparent 60%);z-index:0;}
+.login-container{display:flex;max-width:900px;width:95%;background:var(--card);border-radius:24px;overflow:hidden;border:1px solid var(--border);position:relative;z-index:1;box-shadow:0 0 60px rgba(108,61,232,0.3);}
+.login-left{flex:1;background:linear-gradient(135deg,var(--primary),#9B59B6,var(--secondary));padding:50px 40px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.login-logo{font-size:3rem;margin-bottom:12px;}
+.login-left h1{font-size:2rem;color:#fff;font-weight:700;margin-bottom:10px;}
+.login-left p{color:rgba(255,255,255,0.85);font-size:0.95rem;line-height:1.6;}
+.login-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;justify-content:center;}
+.badge{background:rgba(255,255,255,0.15);color:#fff;padding:5px 14px;border-radius:20px;font-size:0.78rem;border:1px solid rgba(255,255,255,0.2);}
+.login-right{flex:1;padding:50px 40px;display:flex;flex-direction:column;justify-content:center;}
+.login-right h2{font-size:1.6rem;margin-bottom:6px;}
+.login-right p{color:var(--muted);font-size:0.9rem;margin-bottom:28px;}
+.toggle-btns{display:flex;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:24px;}
+.toggle-btns button{flex:1;padding:8px;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:600;transition:all 0.3s;background:transparent;color:var(--muted);}
+.toggle-btns button.active{background:var(--primary);color:#fff;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:0.82rem;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.form-group input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.95rem;outline:none;transition:all 0.3s;}
+.form-group input:focus{border-color:var(--primary);}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),#9B59B6);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(108,61,232,0.5);}
+.forgot{text-align:center;margin-top:14px;font-size:0.85rem;color:var(--muted);}
+.forgot a{color:var(--secondary);cursor:pointer;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,26,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 24px;}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px;}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.nav-logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.nav-logo-text{font-size:1.15rem;font-weight:700;background:linear-gradient(90deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;gap:4px;}
+.nav-links button{background:none;border:none;color:var(--muted);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:0.88rem;font-weight:500;transition:all 0.3s;}
+.nav-links button:hover,.nav-links button.active{background:rgba(108,61,232,0.15);color:var(--primary);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.notif-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;position:relative;padding:6px;}
+.notif-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--accent);border-radius:50%;}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;}
+.dark-toggle{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.82rem;}
+.search-wrap{position:relative;flex:1;max-width:280px;}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.88rem;outline:none;transition:all 0.3s;}
+.search-wrap input:focus{border-color:var(--primary);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.9rem;}
+
+/* NOTIFICATION */
+.notif-panel{position:fixed;top:70px;right:20px;width:300px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;z-index:200;display:none;box-shadow:0 10px 40px rgba(0,0,0,0.4);}
+.notif-panel.open{display:block;animation:slideIn 0.25s ease;}
+.notif-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.notif-item:last-child{border-bottom:none;}
+.ndot{width:8px;height:8px;border-radius:50%;background:var(--primary);margin-top:6px;flex-shrink:0;}
+.notif-text{font-size:0.82rem;line-height:1.4;}
+.notif-time{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+
+/* MAIN */
+.main{padding:80px 24px 40px;max-width:1200px;margin:0 auto;}
+.section-title{font-size:1.15rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.filter-tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:0.83rem;font-weight:600;transition:all 0.3s;}
+.filter-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.timer-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,107,107,0.15);color:var(--accent);padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;}
+
+/* DASHBOARD */
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;position:relative;overflow:hidden;transition:transform 0.3s;}
+.stat-card:hover{transform:translateY(-4px);}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;border-radius:0 16px 0 60px;opacity:0.15;}
+.stat-card.blue::before{background:var(--primary);}
+.stat-card.green::before{background:var(--secondary);}
+.stat-card.red::before{background:var(--accent);}
+.stat-card.gold::before{background:var(--gold);}
+.stat-icon{font-size:1.4rem;margin-bottom:8px;}
+.stat-val{font-size:1.8rem;font-weight:700;}
+.stat-label{font-size:0.8rem;color:var(--muted);margin-top:2px;}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin-bottom:32px;}
+.course-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.3s;}
+.course-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 10px 30px rgba(108,61,232,0.2);}
+.course-thumb{height:120px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;}
+.course-badge{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;}
+.badge-new{background:rgba(0,212,170,0.2);color:var(--secondary);}
+.badge-hot{background:rgba(255,107,107,0.2);color:var(--accent);}
+.badge-pop{background:rgba(108,61,232,0.2);color:#a78bfa;}
+.course-info{padding:14px;}
+.course-info h4{font-size:0.95rem;font-weight:700;margin-bottom:4px;}
+.course-info p{font-size:0.8rem;color:var(--muted);margin-bottom:10px;}
+.course-meta{display:flex;justify-content:space-between;align-items:center;}
+.course-lessons{font-size:0.78rem;color:var(--muted);}
+.course-progress{height:4px;background:var(--bg3);border-radius:2px;margin-top:8px;}
+.course-progress-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));}
+.enroll-btn{padding:5px 14px;background:linear-gradient(135deg,var(--primary),#9B59B6);color:#fff;border:none;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.enroll-btn:hover{transform:scale(1.05);}
+
+/* COURSE DETAIL */
+.course-detail{display:none;}
+.course-detail.open{display:block;}
+.cd-header{background:var(--card);border-radius:20px;border:1px solid var(--border);padding:28px;margin-bottom:22px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;}
+.cd-icon{font-size:3.5rem;width:80px;height:80px;display:flex;align-items:center;justify-content:center;border-radius:16px;flex-shrink:0;}
+.cd-info h2{font-size:1.5rem;font-weight:700;margin-bottom:6px;}
+.cd-info p{color:var(--muted);font-size:0.92rem;line-height:1.6;margin-bottom:12px;}
+.cd-meta{display:flex;gap:16px;flex-wrap:wrap;}
+.cd-meta span{font-size:0.82rem;color:var(--muted);background:var(--bg3);padding:4px 12px;border-radius:20px;}
+.cd-tabs{display:flex;gap:4px;margin-bottom:22px;background:var(--bg3);border-radius:12px;padding:4px;width:fit-content;}
+.cd-tab{padding:8px 20px;border:none;border-radius:9px;cursor:pointer;font-size:0.88rem;font-weight:600;background:transparent;color:var(--muted);transition:all 0.3s;}
+.cd-tab.active{background:var(--primary);color:#fff;}
+.cd-content-panel{display:none;}
+.cd-content-panel.open{display:block;}
+.topic-list{display:flex;flex-direction:column;gap:10px;}
+.topic-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;transition:all 0.3s;}
+.topic-item:hover{border-color:var(--primary);}
+.topic-num{width:28px;height:28px;border-radius:8px;background:rgba(108,61,232,0.2);color:#a78bfa;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;}
+.topic-info{flex:1;}
+.topic-title{font-size:0.9rem;font-weight:600;margin-bottom:2px;}
+.topic-desc{font-size:0.78rem;color:var(--muted);}
+.topic-dur{font-size:0.78rem;color:var(--muted);white-space:nowrap;}
+.topic-icon{font-size:1rem;}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.resource-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;transition:all 0.3s;cursor:pointer;}
+.resource-card:hover{border-color:var(--primary);transform:translateY(-3px);}
+.res-icon{font-size:2rem;margin-bottom:8px;}
+.res-name{font-size:0.88rem;font-weight:700;margin-bottom:4px;}
+.res-type{font-size:0.75rem;color:var(--muted);}
+.back-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:10px;cursor:pointer;font-size:0.88rem;font-weight:600;margin-bottom:20px;transition:all 0.3s;display:inline-flex;align-items:center;gap:6px;}
+.back-btn:hover{border-color:var(--primary);color:var(--primary);}
+
+/* VIDEO */
+.video-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;}
+.video-player{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);}
+.video-screen{background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;}
+.play-btn{width:70px;height:70px;background:rgba(108,61,232,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:absolute;transition:all 0.3s;}
+.play-btn:hover{transform:scale(1.1);}
+.video-info{padding:18px;}
+.video-info h3{font-size:1.05rem;font-weight:700;margin-bottom:6px;}
+.video-info p{font-size:0.85rem;color:var(--muted);}
+.video-tags{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.vtag{background:rgba(108,61,232,0.15);color:#a78bfa;padding:3px 10px;border-radius:12px;font-size:0.75rem;}
+.playlist{background:var(--card);border-radius:16px;border:1px solid var(--border);overflow:hidden;}
+.playlist-header{padding:14px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:0.95rem;}
+.playlist-items{max-height:400px;overflow-y:auto;}
+.playlist-item{display:flex;gap:12px;padding:12px 16px;cursor:pointer;transition:background 0.2s;align-items:center;}
+.playlist-item:hover{background:rgba(108,61,232,0.1);}
+.playlist-item.active{background:rgba(108,61,232,0.15);border-left:3px solid var(--primary);}
+.pitem-num{width:24px;height:24px;background:var(--bg3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;}
+.pitem-title{font-size:0.85rem;font-weight:600;margin-bottom:2px;}
+.pitem-dur{font-size:0.75rem;color:var(--muted);}
+
+/* ASSIGNMENTS */
+.asgn-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.asgn-list-col{}
+.asgn-quiz-col{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;}
+.assignments-list{display:flex;flex-direction:column;gap:14px;}
+.assignment-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;transition:all 0.3s;}
+.assignment-card:hover{border-color:var(--primary);}
+.asgn-title{font-size:0.97rem;font-weight:700;margin-bottom:3px;}
+.asgn-sub{font-size:0.82rem;color:var(--muted);}
+.asgn-tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.asgn-tag{padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;}
+.tag-coding{background:rgba(108,61,232,0.15);color:#a78bfa;}
+.tag-aptitude{background:rgba(0,212,170,0.15);color:var(--secondary);}
+.tag-verbal{background:rgba(255,107,107,0.15);color:var(--accent);}
+.tag-reasoning{background:rgba(255,215,0,0.15);color:var(--gold);}
+.asgn-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;}
+.deadline{font-size:0.8rem;color:var(--muted);}
+.deadline.urgent{color:var(--accent);}
+.status-pill{padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;}
+.status-pending{background:rgba(255,215,0,0.15);color:var(--gold);}
+.status-submitted{background:rgba(0,212,170,0.15);color:var(--secondary);}
+.status-graded{background:rgba(108,61,232,0.15);color:#a78bfa;}
+.submit-btn{padding:7px 16px;background:linear-gradient(135deg,var(--primary),#9B59B6);color:#fff;border:none;border-radius:10px;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.submit-btn:hover{transform:translateY(-2px);}
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:22px;text-align:center;margin-top:14px;transition:all 0.3s;cursor:pointer;display:none;}
+.upload-area:hover{border-color:var(--primary);background:rgba(108,61,232,0.05);}
+
+/* QUIZ */
+.quiz-title{font-size:1.05rem;font-weight:700;margin-bottom:4px;}
+.quiz-sub{font-size:0.82rem;color:var(--muted);margin-bottom:18px;}
+.quiz-subject-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.qstab{padding:5px 13px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:0.78rem;font-weight:600;transition:all 0.3s;}
+.qstab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.question-block{margin-bottom:22px;}
+.q-text{font-size:0.9rem;font-weight:600;margin-bottom:10px;line-height:1.5;}
+.q-num{display:inline-block;background:rgba(108,61,232,0.2);color:#a78bfa;padding:2px 9px;border-radius:8px;font-size:0.75rem;font-weight:700;margin-bottom:6px;}
+.options{display:flex;flex-direction:column;gap:7px;}
+.option{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.3s;font-size:0.85rem;}
+.option:hover{border-color:var(--primary);background:rgba(108,61,232,0.1);}
+.option.selected{border-color:var(--primary);background:rgba(108,61,232,0.15);}
+.option.correct{border-color:var(--secondary);background:rgba(0,212,170,0.12);color:var(--secondary);}
+.option.wrong{border-color:var(--accent);background:rgba(255,107,107,0.12);color:var(--accent);}
+.opt-radio{width:15px;height:15px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:all 0.3s;}
+.option.selected .opt-radio{background:var(--primary);border-color:var(--primary);}
+.option.correct .opt-radio{background:var(--secondary);border-color:var(--secondary);}
+.option.wrong .opt-radio{background:var(--accent);border-color:var(--accent);}
+.quiz-actions{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+.check-btn{padding:9px 20px;background:linear-gradient(135deg,var(--secondary),#00a88a);color:#fff;border:none;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.3s;}
+.check-btn:hover{transform:translateY(-2px);}
+.reset-btn{padding:9px 20px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;}
+.quiz-score{display:none;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:12px;padding:14px;margin-top:14px;text-align:center;}
+.quiz-score.show{display:block;}
+.score-num{font-size:1.8rem;font-weight:700;color:var(--secondary);}
+.score-lbl{font-size:0.85rem;color:var(--muted);margin-top:2px;}
+
+/* LEADERBOARD */
+.leaderboard{background:var(--card);border-radius:16px;border:1px solid var(--border);overflow:hidden;}
+.lb-header{display:grid;grid-template-columns:50px 1fr 80px 80px;padding:14px 18px;background:var(--bg3);font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.lb-row{display:grid;grid-template-columns:50px 1fr 80px 80px;padding:14px 18px;border-top:1px solid var(--border);align-items:center;transition:background 0.2s;}
+.lb-row:hover{background:rgba(108,61,232,0.07);}
+.lb-rank{font-weight:700;font-size:0.9rem;}
+.rank-1{color:var(--gold);}
+.rank-2{color:#C0C0C0;}
+.rank-3{color:#CD7F32;}
+.lb-user{display:flex;align-items:center;gap:10px;}
+.lb-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;}
+.lb-name{font-size:0.88rem;font-weight:600;}
+.lb-score{font-weight:700;color:var(--secondary);font-size:0.9rem;}
+
+/* PROFILE */
+.profile-header{display:flex;gap:24px;align-items:center;background:var(--card);border-radius:20px;padding:28px;border:1px solid var(--border);margin-bottom:24px;flex-wrap:wrap;}
+.profile-avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;flex-shrink:0;}
+.profile-info h2{font-size:1.4rem;font-weight:700;margin-bottom:4px;}
+.profile-info p{color:var(--muted);font-size:0.9rem;}
+.profile-stats{display:flex;gap:24px;margin-top:12px;flex-wrap:wrap;}
+.pstat-val{font-size:1.3rem;font-weight:700;color:var(--primary);}
+.pstat-lbl{font-size:0.75rem;color:var(--muted);}
+.achievements{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.achievement{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;transition:all 0.3s;}
+.achievement:hover{border-color:var(--primary);transform:translateY(-3px);}
+.ach-icon{font-size:1.8rem;margin-bottom:6px;}
+.ach-name{font-size:0.82rem;font-weight:700;margin-bottom:2px;}
+.ach-desc{font-size:0.72rem;color:var(--muted);}
+.progress-section{background:var(--card);border-radius:16px;border:1px solid var(--border);padding:20px;}
+.prog-item{margin-bottom:16px;}
+.prog-label{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:6px;}
+.prog-bar{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;transition:width 1.5s ease;}
+
+@keyframes fadeOut{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(1.03);}}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.97);}to{opacity:1;transform:scale(1);}}
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.floating{animation:float 3s ease-in-out infinite;}
+@media(max-width:900px){.video-layout{grid-template-columns:1fr;}.asgn-wrapper{grid-template-columns:1fr;}.login-left{display:none;}.main{padding:72px 14px 30px;}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<!-- LOGIN -->
+<div class="page active" id="loginPage">
+  <div class="login-bg"></div>
+  <div class="login-container">
+    <div class="login-left">
+      <div class="login-logo floating">🎓</div>
+      <h1>Masters Academy</h1>
+      <p>Your gateway to mastering coding, aptitude, verbal & reasoning skills.</p>
+      <div class="login-badges">
+        <span class="badge">Python</span><span class="badge">Java</span><span class="badge">Web Dev</span>
+        <span class="badge">DSA</span><span class="badge">Aptitude</span><span class="badge">Verbal</span><span class="badge">Reasoning</span>
+      </div>
+    </div>
+    <div class="login-right">
+      <h2>Welcome Back!</h2>
+      <p>Sign in to continue your learning journey</p>
+      <div class="toggle-btns">
+        <button class="active" id="studentBtn" onclick="setRole('student')">Student</button>
+        <button id="instructorBtn" onclick="setRole('instructor')">Instructor</button>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" placeholder="student@mastersacademy.com" id="loginEmail"/></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="loginPass"/></div>
+      <button class="login-btn" onclick="doLogin()">Sign In to Masters Academy</button>
+      <p class="forgot">Forgot password? <a>Reset here</a> &nbsp;|&nbsp; New here? <a>Register</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="page" id="appPage">
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="goTo('dashboard')">
+        <div class="nav-logo-icon">🎓</div>
+        <span class="nav-logo-text">Masters Academy</span>
+      </div>
+      <div class="nav-links">
+        <button onclick="goTo('dashboard')" id="nav-dashboard" class="active">Dashboard</button>
+        <button onclick="goTo('courses')" id="nav-courses">Courses</button>
+        <button onclick="goTo('videos')" id="nav-videos">Videos</button>
+        <button onclick="goTo('assignments')" id="nav-assignments">Assignments</button>
+        <button onclick="goTo('leaderboard')" id="nav-leaderboard">Leaderboard</button>
+        <button onclick="goTo('profile')" id="nav-profile">Profile</button>
+      </div>
+      <div class="nav-right">
+        <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Search courses..."/></div>
+        <button class="notif-btn" onclick="toggleNotif()">🔔<span class="notif-dot"></span></button>
+        <div class="user-avatar" id="userAvatar">JS</div>
+        <button class="dark-toggle" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="notif-panel" id="notifPanel">
+    <strong style="font-size:0.9rem;display:block;margin-bottom:10px;">Notifications</strong>
+    <div class="notif-item"><div class="ndot"></div><div><div class="notif-text">Assignment "Python Basics" is due tomorrow!</div><div class="notif-time">2 hours ago</div></div></div>
+    <div class="notif-item"><div class="ndot" style="background:var(--secondary)"></div><div><div class="notif-text">You earned the "Code Warrior" badge!</div><div class="notif-time">5 hours ago</div></div></div>
+    <div class="notif-item"><div class="ndot" style="background:var(--accent)"></div><div><div class="notif-text">New video: "Advanced DSA Techniques" uploaded</div><div class="notif-time">1 day ago</div></div></div>
+    <div class="notif-item"><div class="ndot" style="background:var(--gold)"></div><div><div class="notif-text">You ranked #4 on the leaderboard!</div><div class="notif-time">2 days ago</div></div></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="main" id="sec-dashboard">
+    <div class="dash-header">
+      <div><h2 style="font-size:1.6rem;font-weight:700">Good Morning, <span style="color:var(--primary)" id="userName">Student</span> 👋</h2><p style="color:var(--muted);margin-top:4px">Continue where you left off. You're doing great!</p></div>
+      <div class="timer-chip">⏰ Assignment due in: <span id="countdown">--:--:--</span></div>
+    </div>
+    <div class="dash-stats">
+      <div class="stat-card blue"><div class="stat-icon">📚</div><div class="stat-val">12</div><div class="stat-label">Courses Enrolled</div></div>
+      <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-val">8</div><div class="stat-label">Assignments Done</div></div>
+      <div class="stat-card red"><div class="stat-icon">🔥</div><div class="stat-val">21</div><div class="stat-label">Day Streak</div></div>
+      <div class="stat-card gold"><div class="stat-icon">⭐</div><div class="stat-val">1,420</div><div class="stat-label">Total XP</div></div>
+    </div>
+    <div class="section-title">📌 Continue Learning</div>
+    <div class="courses-grid">
+      <div class="course-card" onclick="openCourse('python')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a1a4e,#2d2d6e)">🐍<span class="course-badge badge-hot">HOT</span></div><div class="course-info"><h4>Python Mastery</h4><p>Variables, OOP, Libraries & Projects</p><div class="course-meta"><span class="course-lessons">24 lessons</span><button class="enroll-btn">Continue</button></div><div class="course-progress"><div class="course-progress-bar" style="width:65%"></div></div></div></div>
+      <div class="course-card" onclick="openCourse('java')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a3a1a,#2d5a2d)">☕<span class="course-badge badge-pop">POPULAR</span></div><div class="course-info"><h4>Java Programming</h4><p>Core Java, Collections, Spring Basics</p><div class="course-meta"><span class="course-lessons">30 lessons</span><button class="enroll-btn">Continue</button></div><div class="course-progress"><div class="course-progress-bar" style="width:40%"></div></div></div></div>
+      <div class="course-card" onclick="openCourse('web')"><div class="course-thumb" style="background:linear-gradient(135deg,#3a1a1a,#5a2d2d)">🌐<span class="course-badge badge-new">NEW</span></div><div class="course-info"><h4>Web Development</h4><p>HTML, CSS, JavaScript, React</p><div class="course-meta"><span class="course-lessons">36 lessons</span><button class="enroll-btn">Start</button></div><div class="course-progress"><div class="course-progress-bar" style="width:10%"></div></div></div></div>
+      <div class="course-card" onclick="openCourse('aptitude')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a2a3a,#2d3a5a)">🧠<span class="course-badge badge-hot">HOT</span></div><div class="course-info"><h4>Aptitude Mastery</h4><p>Quant, Logical & Data Interpretation</p><div class="course-meta"><span class="course-lessons">20 lessons</span><button class="enroll-btn">Continue</button></div><div class="course-progress"><div class="course-progress-bar" style="width:80%"></div></div></div></div>
+    </div>
+  </div>
+
+  <!-- COURSES PAGE -->
+  <div class="main" id="sec-courses" style="display:none">
+    <!-- Course List -->
+    <div id="courses-list-view">
+      <h2 style="margin-bottom:6px">All Courses</h2>
+      <p style="color:var(--muted);margin-bottom:20px">Click any course to explore its content</p>
+      <div class="filter-tabs">
+        <button class="filter-tab active">All</button><button class="filter-tab">Coding</button>
+        <button class="filter-tab">Aptitude</button><button class="filter-tab">Verbal</button><button class="filter-tab">Reasoning</button>
+      </div>
+      <div class="courses-grid">
+        <div class="course-card" onclick="openCourse('python')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a1a4e,#2d2d6e)">🐍<span class="course-badge badge-hot">HOT</span></div><div class="course-info"><h4>Python Mastery</h4><p>From basics to advanced OOP & projects</p><div class="course-meta"><span class="course-lessons">24 lessons · 12h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('java')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a3a1a,#2d5a2d)">☕<span class="course-badge badge-pop">POPULAR</span></div><div class="course-info"><h4>Java Programming</h4><p>Core Java to Spring Framework</p><div class="course-meta"><span class="course-lessons">30 lessons · 18h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('web')"><div class="course-thumb" style="background:linear-gradient(135deg,#3a1a1a,#5a2d2d)">🌐<span class="course-badge badge-new">NEW</span></div><div class="course-info"><h4>Web Development</h4><p>HTML, CSS, JS, React & Node</p><div class="course-meta"><span class="course-lessons">36 lessons · 22h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('dsa')"><div class="course-thumb" style="background:linear-gradient(135deg,#2a1a3a,#4a2d6e)">🔢</div><div class="course-info"><h4>C++ & DSA</h4><p>Data Structures & Algorithms</p><div class="course-meta"><span class="course-lessons">40 lessons · 25h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('aptitude')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a2a3a,#2d3a5a)">🧠<span class="course-badge badge-hot">HOT</span></div><div class="course-info"><h4>Quantitative Aptitude</h4><p>Numbers, Percentages, Profit & Loss</p><div class="course-meta"><span class="course-lessons">20 lessons · 10h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('verbal')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a3a2a,#2d6a4a)">📝</div><div class="course-info"><h4>Verbal Ability</h4><p>Grammar, Vocabulary & Reading</p><div class="course-meta"><span class="course-lessons">18 lessons · 9h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('reasoning')"><div class="course-thumb" style="background:linear-gradient(135deg,#3a2a1a,#6a4a2d)">🔍</div><div class="course-info"><h4>Logical Reasoning</h4><p>Puzzles, Syllogisms & Patterns</p><div class="course-meta"><span class="course-lessons">22 lessons · 11h</span><button class="enroll-btn">Explore</button></div></div></div>
+        <div class="course-card" onclick="openCourse('react')"><div class="course-thumb" style="background:linear-gradient(135deg,#1a1a3a,#2a2a5a)">⚛️<span class="course-badge badge-new">NEW</span></div><div class="course-info"><h4>React & Next.js</h4><p>Modern frontend development</p><div class="course-meta"><span class="course-lessons">28 lessons · 16h</span><button class="enroll-btn">Explore</button></div></div></div>
+      </div>
+    </div>
+    <!-- Course Detail View -->
+    <div id="courses-detail-view" style="display:none"></div>
+  </div>
+
+  <!-- VIDEOS PAGE -->
+  <div class="main" id="sec-videos" style="display:none">
+    <h2 style="margin-bottom:6px">Video Lessons</h2>
+    <p style="color:var(--muted);margin-bottom:20px">Watch and learn at your own pace</p>
+    <div class="video-layout">
+      <div>
+        <div class="video-player">
+          <div class="video-screen">
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0a0a2a,#1a1a4a);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
+              <div style="font-size:4rem;">🐍</div>
+              <div id="videoTitle" style="font-size:1rem;font-weight:600;color:#fff;text-align:center;">Python Mastery — Lesson 1: Introduction</div>
+            </div>
+            <div class="play-btn" id="playBtn" onclick="togglePlay()">▶</div>
+          </div>
+          <div class="video-info">
+            <h3 id="vInfoTitle">Python Mastery: Introduction to Python</h3>
+            <p>Learn the fundamentals of Python programming including variables, data types, and basic syntax.</p>
+            <div class="video-tags"><span class="vtag">Python</span><span class="vtag">Beginner</span><span class="vtag">Coding</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="playlist">
+        <div class="playlist-header">📋 Course Playlist (8 videos)</div>
+        <div class="playlist-items">
+          <div class="playlist-item active"><div class="pitem-num">1</div><div><div class="pitem-title">Introduction to Python</div><div class="pitem-dur">12:30 · Beginner</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'Variables & Data Types','Python: Variables & Data Types')"><div class="pitem-num">2</div><div><div class="pitem-title">Variables & Data Types</div><div class="pitem-dur">18:45 · Beginner</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'Control Flow','Python: Control Flow & Loops')"><div class="pitem-num">3</div><div><div class="pitem-title">Control Flow & Loops</div><div class="pitem-dur">22:10 · Beginner</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'Functions','Python: Functions & Scope')"><div class="pitem-num">4</div><div><div class="pitem-title">Functions & Scope</div><div class="pitem-dur">25:00 · Intermediate</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'OOP','Python: Object Oriented Programming')"><div class="pitem-num">5</div><div><div class="pitem-title">OOP Concepts</div><div class="pitem-dur">35:20 · Intermediate</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'File Handling','Python: File Handling & I/O')"><div class="pitem-num">6</div><div><div class="pitem-title">File Handling & I/O</div><div class="pitem-dur">20:15 · Intermediate</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'Libraries','Python: Popular Libraries')"><div class="pitem-num">7</div><div><div class="pitem-title">Popular Libraries</div><div class="pitem-dur">28:40 · Advanced</div></div></div>
+          <div class="playlist-item" onclick="selVid(this,'Final Project','Python: Final Project')"><div class="pitem-num">8</div><div><div class="pitem-title">Final Project</div><div class="pitem-dur">45:00 · Advanced</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSIGNMENTS -->
+  <div class="main" id="sec-assignments" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <div><h2 style="margin-bottom:4px">Assignments</h2><p style="color:var(--muted)">Complete tasks & practice with quiz questions</p></div>
+      <div class="filter-tabs" style="margin:0">
+        <button class="filter-tab active">All</button><button class="filter-tab">Pending</button>
+        <button class="filter-tab">Submitted</button><button class="filter-tab">Graded</button>
+      </div>
+    </div>
+    <div class="asgn-wrapper">
+      <!-- Left: Assignment Cards -->
+      <div class="asgn-list-col">
+        <div class="section-title" style="margin-bottom:14px">📋 Your Assignments</div>
+        <div class="assignments-list">
+          <div class="assignment-card"><div class="asgn-title">Python Basics — Functions & OOP</div><div class="asgn-sub">Write a Python program implementing class inheritance</div><div class="asgn-tags"><span class="asgn-tag tag-coding">Coding</span></div><div class="asgn-footer"><div><div class="deadline urgent">⏰ Due: Tomorrow 11:59 PM</div><div class="status-pill status-pending" style="margin-top:6px">Pending</div></div><button class="submit-btn" onclick="showUpload(this)">Submit</button></div><div class="upload-area"><div style="font-size:1.8rem;margin-bottom:6px">📤</div><p><strong>Drag & drop or click to browse</strong></p><p style="font-size:0.8rem;color:var(--muted);margin-top:4px">PDF, DOCX, ZIP (max 50MB)</p><button style="margin-top:12px;padding:8px 20px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;" onclick="submitAsgn(event)">Upload & Submit</button></div></div>
+          <div class="assignment-card"><div class="asgn-title">Quantitative Aptitude — Speed & Distance</div><div class="asgn-sub">Solve 20 problems on time, speed and distance</div><div class="asgn-tags"><span class="asgn-tag tag-aptitude">Aptitude</span></div><div class="asgn-footer"><div><div class="deadline">Due: Apr 25, 2026</div><div class="status-pill status-pending" style="margin-top:6px">Pending</div></div><button class="submit-btn" onclick="showUpload(this)">Submit</button></div><div class="upload-area"><div style="font-size:1.8rem;margin-bottom:6px">📤</div><p><strong>Drag & drop or click to browse</strong></p><p style="font-size:0.8rem;color:var(--muted);margin-top:4px">PDF, DOCX, ZIP (max 50MB)</p><button style="margin-top:12px;padding:8px 20px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;" onclick="submitAsgn(event)">Upload & Submit</button></div></div>
+          <div class="assignment-card"><div class="asgn-title">Verbal Ability — Reading Comprehension</div><div class="asgn-sub">Read two passages and answer 10 questions each</div><div class="asgn-tags"><span class="asgn-tag tag-verbal">Verbal</span></div><div class="asgn-footer"><div><div class="deadline">Due: Apr 27, 2026</div><div class="status-pill status-submitted" style="margin-top:6px">Submitted</div></div><span style="color:var(--muted);font-size:0.8rem">Awaiting grade</span></div></div>
+          <div class="assignment-card"><div class="asgn-title">Logical Reasoning — Syllogisms</div><div class="asgn-sub">Practice set of 30 syllogism problems</div><div class="asgn-tags"><span class="asgn-tag tag-reasoning">Reasoning</span></div><div class="asgn-footer"><div><div class="deadline">Due: Apr 20, 2026</div><div class="status-pill status-graded" style="margin-top:6px">Graded</div></div><span style="color:var(--secondary);font-weight:700">Score: 88/100</span></div></div>
+          <div class="assignment-card"><div class="asgn-title">Java — Collections Framework</div><div class="asgn-sub">Implement a library management system using Java collections</div><div class="asgn-tags"><span class="asgn-tag tag-coding">Coding</span></div><div class="asgn-footer"><div><div class="deadline">Due: Apr 28, 2026</div><div class="status-pill status-graded" style="margin-top:6px">Graded</div></div><span style="color:var(--secondary);font-weight:700">Score: 95/100</span></div></div>
+        </div>
+      </div>
+      <!-- Right: Quiz -->
+      <div class="asgn-quiz-col">
+        <div class="quiz-title">🧩 Practice Questions</div>
+        <div class="quiz-sub">Test your knowledge — choose a subject below</div>
+        <div class="quiz-subject-tabs">
+          <button class="qstab active" onclick="loadQuiz('coding',this)">Coding</button>
+          <button class="qstab" onclick="loadQuiz('aptitude',this)">Aptitude</button>
+          <button class="qstab" onclick="loadQuiz('verbal',this)">Verbal</button>
+          <button class="qstab" onclick="loadQuiz('reasoning',this)">Reasoning</button>
+        </div>
+        <div id="quizBody"></div>
+        <div class="quiz-actions">
+          <button class="check-btn" onclick="checkQuiz()">Check Answers ✓</button>
+          <button class="reset-btn" onclick="resetQuiz()">Reset</button>
+        </div>
+        <div class="quiz-score" id="quizScore">
+          <div class="score-num" id="scoreNum">0/5</div>
+          <div class="score-lbl">Questions Correct</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="main" id="sec-leaderboard" style="display:none">
+    <h2 style="margin-bottom:6px">Leaderboard</h2>
+    <p style="color:var(--muted);margin-bottom:20px">Top performers this month</p>
+    <div class="filter-tabs">
+      <button class="filter-tab active">All Subjects</button><button class="filter-tab">Coding</button>
+      <button class="filter-tab">Aptitude</button><button class="filter-tab">Verbal</button>
+    </div>
+    <div class="leaderboard">
+      <div class="lb-header"><div>Rank</div><div>Student</div><div>Score</div><div>Badges</div></div>
+      <div class="lb-row"><div class="lb-rank rank-1">🥇 1</div><div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#000">AK</div><div class="lb-name">Arjun Kumar</div></div><div class="lb-score">2,850</div><div>🏆🔥⭐</div></div>
+      <div class="lb-row"><div class="lb-rank rank-2">🥈 2</div><div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#C0C0C0,#A0A0A0);color:#000">PS</div><div class="lb-name">Priya Sharma</div></div><div class="lb-score">2,720</div><div>🏆🔥</div></div>
+      <div class="lb-row"><div class="lb-rank rank-3">🥉 3</div><div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#CD7F32,#A05A20);color:#fff">RV</div><div class="lb-name">Rahul Verma</div></div><div class="lb-score">2,610</div><div>🔥⭐</div></div>
+      <div class="lb-row"><div class="lb-rank" style="color:var(--muted)">4</div><div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,var(--primary),#9B59B6)" id="lbAvatar">JS</div><div class="lb-name" style="color:var(--secondary);font-weight:700" id="lbName">You</div></div><div class="lb-score">2,480</div><div>⭐</div></div>
+      <div class="lb-row"><div class="lb-rank" style="color:var(--muted)">5</div><div class="lb-user"><div class="lb-avatar" style="background:var(--bg3)">SN</div><div class="lb-name">Sneha Nair</div></div><div class="lb-score">2,310</div><div>⭐</div></div>
+      <div class="lb-row"><div class="lb-rank" style="color:var(--muted)">6</div><div class="lb-user"><div class="lb-avatar" style="background:var(--bg3)">KP</div><div class="lb-name">Kiran Patel</div></div><div class="lb-score">2,200</div><div>🔥</div></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="main" id="sec-profile" style="display:none">
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar">JS</div>
+      <div class="profile-info">
+        <h2 id="profileName">Student</h2>
+        <p>student@mastersacademy.com · Joined January 2026</p>
+        <div class="profile-stats">
+          <div class="pstat"><div class="pstat-val">12</div><div class="pstat-lbl">Courses</div></div>
+          <div class="pstat"><div class="pstat-val">1,420</div><div class="pstat-lbl">XP Points</div></div>
+          <div class="pstat"><div class="pstat-val">21</div><div class="pstat-lbl">Day Streak</div></div>
+          <div class="pstat"><div class="pstat-val">#4</div><div class="pstat-lbl">Rank</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:14px">🏅 Achievements</div>
+    <div class="achievements">
+      <div class="achievement"><div class="ach-icon">🏆</div><div class="ach-name">Top Coder</div><div class="ach-desc">Scored 90%+ in coding</div></div>
+      <div class="achievement"><div class="ach-icon">🔥</div><div class="ach-name">Streak Master</div><div class="ach-desc">21-day learning streak</div></div>
+      <div class="achievement"><div class="ach-icon">⭐</div><div class="ach-name">Star Student</div><div class="ach-desc">Completed 10 courses</div></div>
+      <div class="achievement"><div class="ach-icon">🧠</div><div class="ach-name">Aptitude Pro</div><div class="ach-desc">Mastered all aptitude topics</div></div>
+      <div class="achievement" style="opacity:0.4"><div class="ach-icon">🎯</div><div class="ach-name">Perfect Score</div><div class="ach-desc">Get 100% on any test</div></div>
+      <div class="achievement" style="opacity:0.4"><div class="ach-icon">👑</div><div class="ach-name">Leaderboard #1</div><div class="ach-desc">Reach top of leaderboard</div></div>
+    </div>
+    <div class="section-title" style="margin-bottom:14px">📊 Progress by Subject</div>
+    <div class="progress-section">
+      <div class="prog-item"><div class="prog-label"><span>Python</span><span style="color:var(--primary)">65%</span></div><div class="prog-bar"><div class="prog-fill" style="width:65%;background:linear-gradient(90deg,var(--primary),#9B59B6)"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Java</span><span style="color:var(--secondary)">40%</span></div><div class="prog-bar"><div class="prog-fill" style="width:40%;background:linear-gradient(90deg,#1a6e3a,var(--secondary))"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Web Development</span><span style="color:var(--accent)">10%</span></div><div class="prog-bar"><div class="prog-fill" style="width:10%;background:linear-gradient(90deg,#8b1a1a,var(--accent))"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Aptitude</span><span style="color:var(--gold)">80%</span></div><div class="prog-bar"><div class="prog-fill" style="width:80%;background:linear-gradient(90deg,#8b6a00,var(--gold))"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Verbal</span><span style="color:var(--secondary)">55%</span></div><div class="prog-bar"><div class="prog-fill" style="width:55%;background:linear-gradient(90deg,var(--secondary),#00a88a)"></div></div></div>
+      <div class="prog-item"><div class="prog-label"><span>Reasoning</span><span style="color:#a78bfa">70%</span></div><div class="prog-bar"><div class="prog-fill" style="width:70%;background:linear-gradient(90deg,#4a28a4,#a78bfa)"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// PARTICLES
+const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+let pts=[];
+function resizeC(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resizeC();window.addEventListener('resize',resizeC);
+for(let i=0;i<80;i++)pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.5,a:Math.random()*.4+.1});
+function drawP(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(108,61,232,${p.a})`;ctx.fill();});
+  pts.forEach((p,i)=>pts.slice(i+1).forEach(q=>{const d=Math.hypot(p.x-q.x,p.y-q.y);if(d<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(108,61,232,${.12*(1-d/100)})`;ctx.stroke();}}));
+  requestAnimationFrame(drawP);
+}
+drawP();
+
+// COUNTDOWN
+function updateCD(){const el=document.getElementById('countdown');if(!el)return;const n=new Date(),t=new Date();t.setHours(23,59,59,0);const d=t-n;if(d<=0){el.textContent='EXPIRED';return;}const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+setInterval(updateCD,1000);updateCD();
+
+// LOGIN
+function setRole(r){document.getElementById('studentBtn').classList.toggle('active',r==='student');document.getElementById('instructorBtn').classList.toggle('active',r==='instructor');}
+function doLogin(){
+  const e=document.getElementById('loginEmail').value.trim(),p=document.getElementById('loginPass').value;
+  if(!e||!p){alert('Please enter email and password.');return;}
+  const name=e.split('@')[0].replace(/[._]/g,' ');
+  const initials=name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'JS';
+  document.getElementById('userName').textContent=name;
+  document.getElementById('userAvatar').textContent=initials;
+  document.getElementById('profileAvatar').textContent=initials;
+  document.getElementById('profileName').textContent=name;
+  document.getElementById('lbAvatar').textContent=initials;
+  document.getElementById('loginPage').style.animation='fadeOut 0.5s ease forwards';
+  setTimeout(()=>{
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('loginPage').classList.remove('active');
+    const app=document.getElementById('appPage');
+    app.classList.add('active');app.style.animation='fadeIn 0.5s ease forwards';
+    loadQuiz('coding',document.querySelector('.qstab'));
+  },500);
+}
+function logout(){
+  const app=document.getElementById('appPage');
+  app.style.animation='fadeOut 0.5s ease forwards';
+  setTimeout(()=>{
+    app.classList.remove('active');app.style.animation='';
+    const login=document.getElementById('loginPage');
+    login.style.display='';login.classList.add('active');login.style.animation='fadeIn 0.5s ease forwards';
+  },500);
+}
+
+// NAV
+function goTo(sec){
+  ['dashboard','courses','videos','assignments','leaderboard','profile'].forEach(s=>{
+    const el=document.getElementById('sec-'+s);if(el)el.style.display=s===sec?'block':'none';
+    const btn=document.getElementById('nav-'+s);if(btn)btn.classList.toggle('active',s===sec);
+  });
+  if(sec==='courses'){document.getElementById('courses-list-view').style.display='block';document.getElementById('courses-detail-view').style.display='none';}
+}
+
+// NOTIFICATIONS
+function toggleNotif(){document.getElementById('notifPanel').classList.toggle('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.notif-btn')&&!e.target.closest('.notif-panel'))document.getElementById('notifPanel').classList.remove('open');});
+
+// VIDEO
+let playing=false;
+function togglePlay(){playing=!playing;document.getElementById('playBtn').textContent=playing?'⏸':'▶';}
+function selVid(el,t,ft){document.querySelectorAll('.playlist-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');document.getElementById('videoTitle').textContent=ft;document.getElementById('vInfoTitle').textContent=ft+': '+t;playing=false;document.getElementById('playBtn').textContent='▶';}
+
+// ASSIGNMENTS
+function showUpload(btn){const ua=btn.closest('.assignment-card').querySelector('.upload-area');ua.style.display=ua.style.display==='none'||!ua.style.display?'block':'none';}
+function submitAsgn(e){e.stopPropagation();e.target.closest('.upload-area').style.display='none';alert('Assignment submitted successfully! 🎉');}
+
+// FILTER TABS
+document.querySelectorAll('.filter-tabs').forEach(g=>g.querySelectorAll('.filter-tab').forEach(b=>b.addEventListener('click',()=>{g.querySelectorAll('.filter-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');})));
+
+// COURSE DATA
+const courseData={
+  python:{icon:'🐍',bg:'linear-gradient(135deg,#1a1a4e,#2d2d6e)',name:'Python Mastery',desc:'A comprehensive course covering Python from the ground up — variables, data types, control flow, functions, OOP, file handling, libraries, and real-world projects.',meta:['24 Lessons','12 Hours','Beginner → Advanced'],
+    topics:[{t:'Introduction to Python',d:'What is Python, installation, IDLE, first program',dur:'12:30'},{t:'Variables & Data Types',d:'int, float, str, bool, type casting',dur:'18:45'},{t:'Operators & Expressions',d:'Arithmetic, comparison, logical, bitwise',dur:'15:00'},{t:'Control Flow',d:'if/elif/else, nested conditions',dur:'14:20'},{t:'Loops',d:'for loop, while loop, break, continue',dur:'20:10'},{t:'Functions',d:'def, parameters, return, *args, **kwargs',dur:'22:30'},{t:'Lists & Tuples',d:'Indexing, slicing, list methods, mutability',dur:'19:00'},{t:'Dictionaries & Sets',d:'Key-value pairs, set operations',dur:'17:40'},{t:'File Handling',d:'open, read, write, with statement',dur:'16:50'},{t:'Object-Oriented Programming',d:'Classes, objects, inheritance, polymorphism',dur:'35:20'},{t:'Exception Handling',d:'try/except/finally, custom exceptions',dur:'14:00'},{t:'Modules & Libraries',d:'import, pip, NumPy, Pandas, Matplotlib',dur:'28:40'},{t:'Final Project',d:'Build a student management system',dur:'45:00'}],
+    resources:[{icon:'📄',n:'Python Cheatsheet',t:'PDF · 2.4 MB'},{icon:'📝',n:'OOP Notes',t:'PDF · 1.8 MB'},{icon:'💾',n:'Practice Problems',t:'ZIP · 5.2 MB'},{icon:'🔗',n:'Python Docs',t:'Link'}]},
+  java:{icon:'☕',bg:'linear-gradient(135deg,#1a3a1a,#2d5a2d)',name:'Java Programming',desc:'Master Java from core fundamentals to advanced frameworks. Covers syntax, OOP, collections, multithreading, JDBC, and an introduction to Spring Boot.',meta:['30 Lessons','18 Hours','Beginner → Advanced'],
+    topics:[{t:'Java Basics & JVM',d:'JDK setup, compiling, Hello World, JVM architecture',dur:'14:00'},{t:'Data Types & Variables',d:'Primitive types, wrapper classes, type conversion',dur:'16:30'},{t:'Control Statements',d:'if/else, switch, for, while, do-while',dur:'18:00'},{t:'Arrays & Strings',d:'1D/2D arrays, String methods, StringBuilder',dur:'22:00'},{t:'OOP — Classes & Objects',d:'Class definition, constructors, this keyword',dur:'28:00'},{t:'Inheritance & Polymorphism',d:'extends, super, method overriding, overloading',dur:'26:00'},{t:'Interfaces & Abstract Classes',d:'interface, implements, abstract keyword',dur:'20:00'},{t:'Collections Framework',d:'ArrayList, LinkedList, HashMap, HashSet, Iterator',dur:'32:00'},{t:'Exception Handling',d:'try/catch/finally, checked vs unchecked',dur:'18:00'},{t:'Multithreading',d:'Thread class, Runnable, synchronization',dur:'25:00'},{t:'File I/O & Streams',d:'FileReader, BufferedWriter, serialization',dur:'20:00'},{t:'JDBC & Databases',d:'Connect to MySQL, CRUD operations',dur:'30:00'},{t:'Intro to Spring Boot',d:'REST API basics, @Controller, @Service',dur:'40:00'}],
+    resources:[{icon:'📄',n:'Java Quick Reference',t:'PDF · 3.1 MB'},{icon:'📝',n:'Collections Notes',t:'PDF · 2.0 MB'},{icon:'💾',n:'Lab Exercises',t:'ZIP · 8.4 MB'},{icon:'🔗',n:'Java SE Docs',t:'Link'}]},
+  web:{icon:'🌐',bg:'linear-gradient(135deg,#3a1a1a,#5a2d2d)',name:'Web Development',desc:'Full-stack web development from scratch. Learn HTML5, CSS3, JavaScript, React, Node.js, and how to deploy real web applications.',meta:['36 Lessons','22 Hours','Beginner → Advanced'],
+    topics:[{t:'HTML5 Fundamentals',d:'Tags, attributes, semantic elements, forms',dur:'16:00'},{t:'CSS3 Styling',d:'Selectors, box model, colors, typography',dur:'20:00'},{t:'Flexbox & Grid',d:'Responsive layouts with modern CSS',dur:'22:00'},{t:'JavaScript Basics',d:'Variables, functions, events, DOM manipulation',dur:'28:00'},{t:'ES6+ Features',d:'Arrow functions, destructuring, spread, modules',dur:'24:00'},{t:'Async JavaScript',d:'Promises, async/await, Fetch API',dur:'26:00'},{t:'React Fundamentals',d:'JSX, components, props, state',dur:'32:00'},{t:'React Hooks',d:'useState, useEffect, useContext',dur:'28:00'},{t:'Node.js & Express',d:'Server setup, routing, middleware',dur:'30:00'},{t:'REST API Development',d:'GET/POST/PUT/DELETE, JSON responses',dur:'28:00'},{t:'MongoDB & Mongoose',d:'NoSQL basics, schemas, CRUD',dur:'25:00'},{t:'Deployment',d:'Vercel, Netlify, Render — deploy full stack apps',dur:'20:00'}],
+    resources:[{icon:'📄',n:'HTML/CSS Cheatsheet',t:'PDF · 1.9 MB'},{icon:'📝',n:'JS ES6 Notes',t:'PDF · 2.5 MB'},{icon:'💾',n:'Project Starter Files',t:'ZIP · 12 MB'},{icon:'🔗',n:'MDN Web Docs',t:'Link'}]},
+  dsa:{icon:'🔢',bg:'linear-gradient(135deg,#2a1a3a,#4a2d6e)',name:'C++ & Data Structures',desc:'Deep dive into Data Structures and Algorithms using C++. Covers arrays, linked lists, trees, graphs, sorting, searching, and dynamic programming.',meta:['40 Lessons','25 Hours','Intermediate → Advanced'],
+    topics:[{t:'C++ Basics',d:'Syntax, I/O, pointers, references',dur:'20:00'},{t:'Arrays & Strings',d:'2D arrays, character arrays, STL string',dur:'22:00'},{t:'Linked Lists',d:'Singly, doubly, circular linked lists',dur:'28:00'},{t:'Stacks & Queues',d:'Array/linked-list implementations',dur:'24:00'},{t:'Trees',d:'Binary trees, BST, traversals, height',dur:'32:00'},{t:'Heaps',d:'Min/max heap, priority queue',dur:'22:00'},{t:'Graphs',d:'BFS, DFS, adjacency matrix/list',dur:'35:00'},{t:'Sorting Algorithms',d:'Bubble, merge, quick, counting sort',dur:'30:00'},{t:'Searching Algorithms',d:'Binary search, hashing techniques',dur:'20:00'},{t:'Dynamic Programming',d:'Memoization, tabulation, classic problems',dur:'40:00'},{t:'Greedy Algorithms',d:'Activity selection, Huffman coding',dur:'25:00'},{t:'Competitive Coding',d:'Problem solving strategies, time complexity',dur:'35:00'}],
+    resources:[{icon:'📄',n:'DSA Cheatsheet',t:'PDF · 3.5 MB'},{icon:'📝',n:'DP Pattern Notes',t:'PDF · 2.8 MB'},{icon:'💾',n:'C++ Practice Set',t:'ZIP · 6.2 MB'},{icon:'🔗',n:'CP Reference',t:'Link'}]},
+  aptitude:{icon:'🧠',bg:'linear-gradient(135deg,#1a2a3a,#2d3a5a)',name:'Quantitative Aptitude',desc:'Master all quantitative aptitude topics for placements and competitive exams — number systems, percentages, ratios, time-speed-distance, and data interpretation.',meta:['20 Lessons','10 Hours','Beginner → Intermediate'],
+    topics:[{t:'Number System',d:'HCF, LCM, divisibility rules, remainders',dur:'18:00'},{t:'Simplification',d:'BODMAS, fractions, surds, indices',dur:'14:00'},{t:'Percentages',d:'Basic % problems, % change, applications',dur:'16:00'},{t:'Profit & Loss',d:'CP, SP, discount, marked price',dur:'15:00'},{t:'Ratio & Proportion',d:'Simple ratio, compound ratio, variation',dur:'14:00'},{t:'Time & Work',d:'Work efficiency, pipes & cisterns',dur:'16:00'},{t:'Time, Speed & Distance',d:'Relative speed, trains, boats & streams',dur:'20:00'},{t:'Simple & Compound Interest',d:'SI formula, CI formula, installments',dur:'15:00'},{t:'Averages & Mixtures',d:'Weighted average, alligation',dur:'14:00'},{t:'Data Interpretation',d:'Bar graphs, pie charts, tables, line graphs',dur:'25:00'}],
+    resources:[{icon:'📄',n:'Formula Sheet',t:'PDF · 1.6 MB'},{icon:'📝',n:'Shortcut Tricks',t:'PDF · 2.2 MB'},{icon:'💾',n:'500 Practice Qs',t:'PDF · 4.8 MB'},{icon:'🔗',n:'Mock Tests',t:'Link'}]},
+  verbal:{icon:'📝',bg:'linear-gradient(135deg,#1a3a2a,#2d6a4a)',name:'Verbal Ability',desc:'Strengthen your English language skills — grammar, vocabulary, reading comprehension, sentence correction, and verbal reasoning for competitive exams.',meta:['18 Lessons','9 Hours','Beginner → Intermediate'],
+    topics:[{t:'Parts of Speech',d:'Nouns, verbs, adjectives, adverbs, prepositions',dur:'14:00'},{t:'Tenses',d:'All 12 tenses with examples and rules',dur:'18:00'},{t:'Subject-Verb Agreement',d:'Singular/plural, collective nouns, either/neither',dur:'14:00'},{t:'Articles & Determiners',d:'a, an, the — usage rules & exceptions',dur:'12:00'},{t:'Sentence Correction',d:'Common errors, parallelism, modifiers',dur:'20:00'},{t:'Fill in the Blanks',d:'Contextual vocabulary, collocations',dur:'16:00'},{t:'Reading Comprehension',d:'Inference, tone, main idea, detail questions',dur:'25:00'},{t:'Vocabulary Building',d:'Synonyms, antonyms, one-word substitution',dur:'18:00'},{t:'Para Jumbles',d:'Sentence ordering, logical connectors',dur:'16:00'},{t:'Cloze Test',d:'Passage-based gap filling strategies',dur:'14:00'}],
+    resources:[{icon:'📄',n:'Grammar Rules PDF',t:'PDF · 2.1 MB'},{icon:'📝',n:'Vocabulary List',t:'PDF · 1.4 MB'},{icon:'💾',n:'RC Practice Set',t:'PDF · 3.6 MB'},{icon:'🔗',n:'Word Power',t:'Link'}]},
+  reasoning:{icon:'🔍',bg:'linear-gradient(135deg,#3a2a1a,#6a4a2d)',name:'Logical Reasoning',desc:'Develop sharp logical and analytical thinking. Topics include coding-decoding, blood relations, seating arrangements, syllogisms, puzzles, and more.',meta:['22 Lessons','11 Hours','Beginner → Intermediate'],
+    topics:[{t:'Series Completion',d:'Number series, alphabet series, mixed series',dur:'16:00'},{t:'Coding & Decoding',d:'Letter coding, number coding, substitution',dur:'14:00'},{t:'Blood Relations',d:'Family tree, coded relations',dur:'12:00'},{t:'Direction & Distance',d:'Navigation problems, shortest path',dur:'13:00'},{t:'Ranking & Ordering',d:'Position from top/bottom, comparison',dur:'11:00'},{t:'Seating Arrangement',d:'Linear, circular, facing problems',dur:'20:00'},{t:'Syllogisms',d:'Venn diagram method, all/some/no',dur:'18:00'},{t:'Puzzles & Scheduling',d:'Complex constraint puzzles',dur:'25:00'},{t:'Statement & Assumptions',d:'Implicit assumptions, conclusions',dur:'16:00'},{t:'Data Sufficiency',d:'2-statement problems, yes/no/either',dur:'18:00'},{t:'Critical Reasoning',d:'Strengthen/weaken arguments',dur:'20:00'}],
+    resources:[{icon:'📄',n:'Reasoning Shortcuts',t:'PDF · 1.9 MB'},{icon:'📝',n:'Puzzle Sets',t:'PDF · 3.0 MB'},{icon:'💾',n:'300 Practice Qs',t:'PDF · 4.1 MB'},{icon:'🔗',n:'Mock Tests',t:'Link'}]},
+  react:{icon:'⚛️',bg:'linear-gradient(135deg,#1a1a3a,#2a2a5a)',name:'React & Next.js',desc:'Modern frontend development with React 18 and Next.js 14. Learn component-based architecture, hooks, state management, SSR, and deployment.',meta:['28 Lessons','16 Hours','Intermediate → Advanced'],
+    topics:[{t:'React Setup',d:'Vite, CRA, project structure, JSX',dur:'14:00'},{t:'Components & Props',d:'Functional components, prop drilling, children',dur:'18:00'},{t:'State with useState',d:'Local state, derived state, re-renders',dur:'20:00'},{t:'useEffect & Lifecycle',d:'Side effects, cleanup, dependencies',dur:'22:00'},{t:'Event Handling',d:'onClick, onChange, form handling',dur:'16:00'},{t:'Lists & Keys',d:'map(), unique keys, dynamic rendering',dur:'14:00'},{t:'Context API',d:'createContext, useContext, global state',dur:'20:00'},{t:'React Router',d:'BrowserRouter, Route, Link, useNavigate',dur:'22:00'},{t:'Fetching Data',d:'useEffect + Fetch, Axios, loading states',dur:'24:00'},{t:'Next.js Basics',d:'Pages, routing, getStaticProps',dur:'26:00'},{t:'SSR & SSG',d:'getServerSideProps, ISR, hybrid rendering',dur:'24:00'},{t:'Deployment',d:'Vercel deployment, env variables, CI/CD',dur:'20:00'}],
+    resources:[{icon:'📄',n:'React Hooks Reference',t:'PDF · 2.3 MB'},{icon:'📝',n:'Next.js Patterns',t:'PDF · 2.7 MB'},{icon:'💾',n:'Starter Templates',t:'ZIP · 9.5 MB'},{icon:'🔗',n:'React Docs',t:'Link'}]}
+};
+
+// OPEN COURSE DETAIL
+function openCourse(id){
+  goTo('courses');
+  const c=courseData[id];
+  document.getElementById('courses-list-view').style.display='none';
+  const dv=document.getElementById('courses-detail-view');
+  dv.style.display='block';
+  dv.innerHTML=`
+    <button class="back-btn" onclick="backToCourses()">← Back to Courses</button>
+    <div class="cd-header">
+      <div class="cd-icon" style="background:${c.bg}">${c.icon}</div>
+      <div class="cd-info">
+        <h2>${c.name}</h2>
+        <p>${c.desc}</p>
+        <div class="cd-meta">${c.meta.map(m=>`<span>${m}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="cd-tabs">
+      <button class="cd-tab active" onclick="cdTab('syllabus',this)">📋 Syllabus</button>
+      <button class="cd-tab" onclick="cdTab('resources',this)">📁 Resources</button>
+    </div>
+    <div id="cd-syllabus" class="cd-content-panel open">
+      <div class="topic-list">${c.topics.map((t,i)=>`
+        <div class="topic-item">
+          <div class="topic-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="topic-info"><div class="topic-title">${t.t}</div><div class="topic-desc">${t.d}</div></div>
+          <div class="topic-dur">🕐 ${t.dur}</div>
+          <div class="topic-icon">▶</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div id="cd-resources" class="cd-content-panel">
+      <div class="resources-grid">${c.resources.map(r=>`
+        <div class="resource-card">
+          <div class="res-icon">${r.icon}</div>
+          <div class="res-name">${r.n}</div>
+          <div class="res-type">${r.t}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+function backToCourses(){document.getElementById('courses-list-view').style.display='block';document.getElementById('courses-detail-view').style.display='none';}
+function cdTab(id,btn){
+  document.querySelectorAll('.cd-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('.cd-content-panel').forEach(p=>p.classList.remove('open'));
+  document.getElementById('cd-'+id).classList.add('open');
+}
+
+// QUIZ DATA
+const quizData={
+  coding:[
+    {q:'What is the output of: print(type(10/3)) in Python?',opts:["<class 'int'>","<class 'float'>","<class 'str'>","Error"],ans:1},
+    {q:'Which keyword is used to define a function in Python?',opts:['function','fun','def','define'],ans:2},
+    {q:'In Java, which of these is NOT a primitive data type?',opts:['int','boolean','String','char'],ans:2},
+    {q:'What does HTML stand for?',opts:['Hyper Text Markup Language','High Text Machine Language','Hyper Transfer Markup Logic','Hyper Text Machine Link'],ans:0},
+    {q:'Which data structure uses LIFO (Last In First Out)?',opts:['Queue','Stack','Array','Linked List'],ans:1}
+  ],
+  aptitude:[
+    {q:'If a train travels 360 km in 4 hours, what is its speed in m/s?',opts:['25 m/s','22.5 m/s','20 m/s','30 m/s'],ans:0},
+    {q:'A shopkeeper gives 20% discount on a product marked at ₹500. What is the selling price?',opts:['₹400','₹420','₹380','₹450'],ans:0},
+    {q:'Find the average of the first 10 even numbers.',opts:['10','11','12','9'],ans:1},
+    {q:'If 6 men can complete a work in 8 days, how many days will 4 men take?',opts:['10','12','14','16'],ans:1},
+    {q:'What is 15% of 240?',opts:['36','34','38','32'],ans:0}
+  ],
+  verbal:[
+    {q:'Choose the correct sentence:',opts:['She don\'t like apples.','She doesn\'t likes apples.','She doesn\'t like apples.','She not like apples.'],ans:2},
+    {q:'Find the synonym of "Eloquent":',opts:['Silent','Articulate','Confused','Loud'],ans:1},
+    {q:'Identify the antonym of "Benevolent":',opts:['Kind','Generous','Malevolent','Helpful'],ans:2},
+    {q:'Fill in the blank: "She was __ tired that she fell asleep immediately."',opts:['so','such','very','too'],ans:0},
+    {q:'Choose the correctly spelt word:',opts:['Accomodation','Accommodation','Acomodation','Acommodation'],ans:1}
+  ],
+  reasoning:[
+    {q:'In a row of 40 students, if Ravi is 15th from the left, what is his position from the right?',opts:['25th','26th','27th','24th'],ans:1},
+    {q:'Complete the series: 2, 6, 18, 54, __',opts:['108','162','216','148'],ans:1},
+    {q:'Pointing to a man, a woman says "His mother is the only daughter of my mother." How is the woman related to the man?',opts:['Sister','Aunt','Mother','Grandmother'],ans:2},
+    {q:'If BOOK is coded as DQQM, how is PENCIL coded?',opts:['RGPEKN','RFPENK','RGPEKP','RGOENK'],ans:0},
+    {q:'All cats are dogs. All dogs are birds. Conclusion: All cats are birds.',opts:['True','False','Partially true','Cannot determine'],ans:0}
+  ]
+};
+
+let curQuiz='coding',userAns={};
+function loadQuiz(subject,btn){
+  curQuiz=subject;userAns={};
+  document.querySelectorAll('.qstab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const qs=quizData[subject];
+  let html='';
+  qs.forEach((q,i)=>{
+    html+=`<div class="question-block"><div class="q-num">Q${i+1}</div><div class="q-text">${q.q}</div><div class="options" id="opts-${i}">`;
+    q.opts.forEach((o,j)=>{html+=`<div class="option" onclick="selectOpt(${i},${j},this)"><div class="opt-radio"></div>${o}</div>`;});
+    html+='</div></div>';
+  });
+  document.getElementById('quizBody').innerHTML=html;
+  document.getElementById('quizScore').classList.remove('show');
+}
+function selectOpt(qi,oi,el){
+  if(document.getElementById('quizScore').classList.contains('show'))return;
+  userAns[qi]=oi;
+  document.querySelectorAll(`#opts-${qi} .option`).forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function checkQuiz(){
+  const qs=quizData[curQuiz];let score=0;
+  qs.forEach((q,i)=>{
+    const opts=document.querySelectorAll(`#opts-${i} .option`);
+    opts.forEach((o,j)=>{
+      o.classList.remove('selected','correct','wrong');
+      if(j===q.ans)o.classList.add('correct');
+      else if(userAns[i]===j)o.classList.add('wrong');
+    });
+    if(userAns[i]===q.ans)score++;
+  });
+  document.getElementById('scoreNum').textContent=`${score}/${qs.length}`;
+  document.getElementById('quizScore').classList.add('show');
+}
+function resetQuiz(){userAns={};loadQuiz(curQuiz,null);}
+
+// Init quiz on load
+setTimeout(()=>loadQuiz('coding',null),100);
+</script>
+</body>
+</html>
